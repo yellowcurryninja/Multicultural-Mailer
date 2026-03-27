@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Multicultural Mailer Prize Pool</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --deep:    #0d0015;
+    --dark:    #160025;
+    --mid:     #2a0050;
+    --accent:  #8b2be2;
+    --bright:  #b44fff;
+    --glow:    #d580ff;
+    --gold:    #f0c040;
+    --white:   #f5eeff;
+    --muted:   #a080c0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100vh;
+    background: var(--deep);
+    font-family: 'Outfit', sans-serif;
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* ── Stars background ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 34% 5%,  rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 57% 22%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 78% 9%,  rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 91% 31%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 23% 44%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 66% 55%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 45% 72%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 88% 68%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 5%  83%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 29% 91%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 73% 87%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(2px 2px at 50% 40%, rgba(180,79,255,0.4) 0%, transparent 100%),
+      radial-gradient(2px 2px at 15% 60%, rgba(180,79,255,0.3) 0%, transparent 100%),
+      radial-gradient(600px 400px at 50% 0%,   rgba(90,0,160,0.35) 0%, transparent 70%),
+      radial-gradient(400px 300px at 80% 100%, rgba(60,0,120,0.25) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 20px 60px;
+  }
+
+  /* ── Header ── */
+  .header {
+    text-align: center;
+    margin-bottom: 36px;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .logo-wrap {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: var(--mid);
+    border: 3px solid var(--bright);
+    box-shadow: 0 0 28px rgba(180,79,255,0.5), inset 0 0 20px rgba(180,79,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 22px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow 0.3s;
+  }
+  .logo-wrap:hover { box-shadow: 0 0 44px rgba(180,79,255,0.8), inset 0 0 20px rgba(180,79,255,0.2); }
+  .logo-wrap img { width: 100%; height: 100%; object-fit: contain; }
+  .logo-placeholder {
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    padding: 10px;
+    line-height: 1.4;
+  }
+
+  h1 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(20px, 4vw, 36px);
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    background: linear-gradient(135deg, #d580ff 0%, #f0c040 50%, #d580ff 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s linear infinite;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  /* ── Upload Zone ── */
+  .upload-zone {
+    width: 100%;
+    max-width: 480px;
+    border: 2px dashed var(--accent);
+    border-radius: 16px;
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: rgba(138,43,226,0.06);
+    margin-bottom: 28px;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+  .upload-zone:hover, .upload-zone.drag-over {
+    border-color: var(--glow);
+    background: rgba(180,79,255,0.12);
+    box-shadow: 0 0 24px rgba(180,79,255,0.2);
+  }
+  .upload-zone input { display: none; }
+  .upload-icon { font-size: 36px; margin-bottom: 10px; }
+  .upload-zone p { font-size: 15px; color: var(--muted); }
+  .upload-zone strong { color: var(--glow); }
+  .file-info {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--gold);
+    display: none;
+  }
+
+  /* ── Drum / Slot ── */
+  .drum-card {
+    width: 100%;
+    max-width: 560px;
+    background: linear-gradient(160deg, rgba(42,0,80,0.9) 0%, rgba(22,0,37,0.95) 100%);
+    border: 1px solid rgba(180,79,255,0.3);
+    border-radius: 24px;
+    padding: 36px 32px;
+    text-align: center;
+    box-shadow: 0 0 60px rgba(138,43,226,0.2), 0 20px 60px rgba(0,0,0,0.5);
+    margin-bottom: 28px;
+    animation: fadeUp 0.8s 0.4s ease both;
+    backdrop-filter: blur(10px);
+  }
+
+  .drum-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 18px;
+  }
+
+  .drum-window {
+    position: relative;
+    height: 80px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .drum-window::before,
+  .drum-window::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    height: 30px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .drum-window::before { top: 0;    background: linear-gradient(to bottom, var(--dark), transparent); }
+  .drum-window::after  { bottom: 0; background: linear-gradient(to top,    var(--dark), transparent); }
+
+  .drum-track {
+    position: absolute;
+    width: 100%;
+    transition: transform 0.08s linear;
+  }
+
+  .drum-name {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(22px, 5vw, 34px);
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 10px;
+  }
+
+  .separator-line {
+    position: absolute;
+    left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--bright), transparent);
+    z-index: 3;
+  }
+  .separator-line.top    { top: 50%; transform: translateY(-40px); }
+  .separator-line.bottom { top: 50%; transform: translateY(40px); }
+
+  /* ── Winner display ── */
+  .winner-card {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 18px 30px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(240,192,64,0.12) 0%, rgba(180,79,255,0.12) 100%);
+    border: 1px solid rgba(240,192,64,0.4);
+    margin-bottom: 24px;
+    animation: winnerPop 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  .winner-label {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.8;
+  }
+  .winner-name {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(20px, 4vw, 30px);
+    color: var(--gold);
+    text-shadow: 0 0 30px rgba(240,192,64,0.6);
+  }
+
+  /* ── Count badge ── */
+  .count-badge {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    letter-spacing: 0.08em;
+  }
+  .count-badge span { color: var(--bright); font-weight: 600; }
+
+  /* ── Buttons ── */
+  .btn-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn {
+    padding: 14px 36px;
+    border-radius: 50px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.25s;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .btn-draw {
+    background: linear-gradient(135deg, var(--accent), var(--bright));
+    color: #fff;
+    box-shadow: 0 6px 30px rgba(138,43,226,0.5);
+  }
+  .btn-draw:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 40px rgba(180,79,255,0.7);
+  }
+  .btn-draw:active:not(:disabled) { transform: translateY(0); }
+
+  .btn-reset {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid rgba(180,79,255,0.3);
+  }
+  .btn-reset:hover:not(:disabled) {
+    color: var(--white);
+    border-color: var(--bright);
+    background: rgba(180,79,255,0.1);
+  }
+
+  /* ── Confetti canvas ── */
+  #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 100; }
+
+  /* ── Particles burst ── */
+  .burst {
+    position: fixed;
+    top: 50%; left: 50%;
+    pointer-events: none;
+    z-index: 99;
+  }
+  .spark {
+    position: absolute;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: spark 1s ease-out forwards;
+  }
+
+  /* ── Glow ring on draw ── */
+  .drum-card.drawing {
+    box-shadow: 0 0 80px rgba(180,79,255,0.5), 0 0 140px rgba(138,43,226,0.2), 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  /* ── Empty state ── */
+  .empty-msg {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
+  /* ── Keyframes ── */
+  @keyframes shimmer {
+    0%   { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes winnerPop {
+    from { opacity: 0; transform: scale(0.7); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes spark {
+    0%   { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+    100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0); }
+  }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 0 28px rgba(180,79,255,0.5), inset 0 0 20px rgba(180,79,255,0.1); }
+    50%     { box-shadow: 0 0 50px rgba(180,79,255,0.9), inset 0 0 20px rgba(180,79,255,0.3); }
+  }
+  .logo-wrap.pulsing { animation: pulse 1.2s ease-in-out infinite; }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: auto;
+    padding-top: 40px;
+    font-size: 11px;
+    color: rgba(160,128,192,0.4);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 480px) {
+    .drum-card { padding: 28px 18px; }
+    h1 { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-wrap" id="logoWrap" title="Click to upload logo">
+      <div class="logo-placeholder">Click to<br/>upload logo</div>
+      <input type="file" id="logoInput" accept="image/*"/>
+    </div>
+    <h1>Multicultural Mailer<br/>Prize Pool</h1>
+    <p class="subtitle">Official Lucky Draw</p>
+  </div>
+
+  <!-- Upload zone -->
+  <div class="upload-zone" id="uploadZone">
+    <input type="file" id="namesFile" accept=".txt,.csv"/>
+    <div class="upload-icon">📋</div>
+    <p><strong>Drop your names file here</strong></p>
+    <p>or click to browse &mdash; .txt or .csv, one name per line</p>
+    <div class="file-info" id="fileInfo"></div>
+  </div>
+
+  <!-- Count -->
+  <p class="count-badge" id="countBadge" style="display:none">
+    <span id="nameCount">0</span> participants loaded
+  </p>
+
+  <!-- Drum card -->
+  <div class="drum-card" id="drumCard">
+    <p class="drum-label">Current Draw</p>
+
+    <div class="drum-window">
+      <div class="separator-line top"></div>
+      <div class="separator-line bottom"></div>
+      <div class="drum-track" id="drumTrack">
+        <div class="drum-name" id="drumDisplay">Upload names to begin</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-draw" id="drawBtn" disabled>Draw Winner</button>
+      <button class="btn btn-reset" id="resetBtn" disabled>Reset</button>
+    </div>
+  </div>
+
+  <!-- Winner -->
+  <div class="winner-card" id="winnerCard">
+    <p class="winner-label">🏆 Lucky Winner</p>
+    <p class="winner-name" id="winnerName"></p>
+  </div>
+
+  <p class="footer">Multicultural Mailer &mdash; Prize Pool Draw</p>
+</div>
+
+<!-- Hidden logo input trigger -->
+<input type="file" id="logoInputHidden" accept="image/*" style="display:none"/>
+
+<script>
+(function() {
+
+  // ── State ──
+  let names = [];
+  let rolling = false;
+  let rollingInterval = null;
+  let currentIdx = 0;
+
+  // ── Elements ──
+  const logoWrap    = document.getElementById('logoWrap');
+  const logoInput   = document.getElementById('logoInputHidden');
+  const namesFile   = document.getElementById('namesFile');
+  const uploadZone  = document.getElementById('uploadZone');
+  const fileInfo    = document.getElementById('fileInfo');
+  const countBadge  = document.getElementById('countBadge');
+  const nameCount   = document.getElementById('nameCount');
+  const drumCard    = document.getElementById('drumCard');
+  const drumDisplay = document.getElementById('drumDisplay');
+  const drawBtn     = document.getElementById('drawBtn');
+  const resetBtn    = document.getElementById('resetBtn');
+  const winnerCard  = document.getElementById('winnerCard');
+  const winnerName  = document.getElementById('winnerName');
+  const canvas      = document.getElementById('confetti');
+  const ctx         = canvas.getContext('2d');
+
+  // ── Logo upload ──
+  logoWrap.addEventListener('click', () => logoInput.click());
+  logoInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      logoWrap.innerHTML = `<img src="${ev.target.result}" alt="Logo"/>`;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // ── Names upload ──
+  uploadZone.addEventListener('click', () => namesFile.click());
+  uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+  uploadZone.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) processFile(file);
+  });
+  namesFile.addEventListener('change', e => {
+    if (e.target.files[0]) processFile(e.target.files[0]);
+  });
+
+  function processFile(file) {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const text = ev.target.result;
+      // Support CSV (first column) or plain txt
+      const lines = text.split(/\r?\n/);
+      names = lines
+        .map(l => {
+          const col = l.split(',')[0].trim();
+          return col.replace(/^"|"$/g, '').trim();
+        })
+        .filter(n => n.length > 0);
+
+      if (names.length === 0) {
+        alert('No names found. Make sure the file has one name per line.');
+        return;
+      }
+
+      fileInfo.style.display = 'block';
+      fileInfo.textContent = `✓ ${file.name} — ${names.length} names loaded`;
+
+      nameCount.textContent = names.length;
+      countBadge.style.display = 'block';
+
+      drumDisplay.textContent = names[0];
+      drawBtn.disabled = false;
+      resetBtn.disabled = false;
+
+      winnerCard.style.display = 'none';
+    };
+    reader.readAsText(file);
+  }
+
+  // ── Draw logic ──
+  drawBtn.addEventListener('click', () => {
+    if (names.length === 0 || rolling) return;
+    startDraw();
+  });
+
+  resetBtn.addEventListener('click', () => {
+    clearInterval(rollingInterval);
+    rolling = false;
+    winnerCard.style.display = 'none';
+    drumCard.classList.remove('drawing');
+    drumDisplay.textContent = names.length > 0 ? names[0] : 'Upload names to begin';
+    drawBtn.disabled = names.length === 0;
+    drawBtn.textContent = 'Draw Winner';
+    stopConfetti();
+  });
+
+  function startDraw() {
+    rolling = true;
+    drawBtn.disabled = true;
+    drawBtn.textContent = 'Drawing...';
+    winnerCard.style.display = 'none';
+    drumCard.classList.add('drawing');
+
+    const duration = 4000; // ms
+    const startTime = Date.now();
+    let speed = 60;
+
+    function tick() {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // Ease-out: slow down toward end
+      const easedSpeed = speed + (progress * progress * progress) * 180;
+      clearInterval(rollingInterval);
+
+      if (progress >= 1) {
+        // Land on winner
+        const winnerIdx = Math.floor(Math.random() * names.length);
+        drumDisplay.textContent = names[winnerIdx];
+        drumDisplay.style.color = 'var(--gold)';
+        drumDisplay.style.textShadow = '0 0 30px rgba(240,192,64,0.7)';
+        showWinner(names[winnerIdx]);
+        rolling = false;
+        drawBtn.textContent = 'Draw Again';
+        drawBtn.disabled = false;
+        drumCard.classList.remove('drawing');
+        return;
+      }
+
+      rollingInterval = setInterval(() => {
+        currentIdx = (currentIdx + 1) % names.length;
+        drumDisplay.textContent = names[currentIdx];
+        drumDisplay.style.color = '';
+        drumDisplay.style.textShadow = '';
+        clearInterval(rollingInterval);
+        tick();
+      }, Math.max(40, easedSpeed));
+    }
+
+    tick();
+  }
+
+  function showWinner(name) {
+    winnerName.textContent = name;
+    winnerCard.style.display = 'flex';
+    logoWrap.classList.add('pulsing');
+    setTimeout(() => logoWrap.classList.remove('pulsing'), 3000);
+    launchConfetti();
+    spawnSparks();
+  }
+
+  // ── Confetti ──
+  let confettiParticles = [];
+  let confettiRunning = false;
+  let confettiRaf;
+
+  function launchConfetti() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    confettiParticles = [];
+    for (let i = 0; i < 180; i++) {
+      confettiParticles.push({
+        x: Math.random() * canvas.width,
+        y: -10 - Math.random() * 200,
+        w: 6 + Math.random() * 8,
+        h: 3 + Math.random() * 5,
+        angle: Math.random() * Math.PI * 2,
+        vx: (Math.random() - 0.5) * 4,
+        vy: 2 + Math.random() * 4,
+        va: (Math.random() - 0.5) * 0.2,
+        color: ['#b44fff','#8b2be2','#f0c040','#d580ff','#ff80e0','#80c0ff'][Math.floor(Math.random()*6)],
+        opacity: 1
+      });
+    }
+    confettiRunning = true;
+    animateConfetti();
+  }
+
+  function animateConfetti() {
+    if (!confettiRunning) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    confettiParticles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.angle += p.va;
+      p.vy += 0.05;
+      if (p.y > canvas.height * 0.8) p.opacity -= 0.018;
+      if (p.opacity > 0) {
+        alive = true;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.opacity);
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.angle);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        ctx.restore();
+      }
+    });
+    if (alive) confettiRaf = requestAnimationFrame(animateConfetti);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  function stopConfetti() {
+    confettiRunning = false;
+    cancelAnimationFrame(confettiRaf);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  // ── Sparks ──
+  function spawnSparks() {
+    const burst = document.createElement('div');
+    burst.className = 'burst';
+    document.body.appendChild(burst);
+    const colors = ['#f0c040','#b44fff','#d580ff','#ff80e0'];
+    for (let i = 0; i < 20; i++) {
+      const s = document.createElement('div');
+      s.className = 'spark';
+      const angle = (i / 20) * Math.PI * 2;
+      const dist  = 80 + Math.random() * 120;
+      s.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+      s.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+      s.style.background = colors[i % colors.length];
+      s.style.animationDelay = Math.random() * 0.3 + 's';
+      burst.appendChild(s);
+    }
+    setTimeout(() => burst.remove(), 1500);
+  }
+
+  window.addEventListener('resize', () => {
+    if (confettiRunning) { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  });
+
+})();
+</script>
+</body>
+</html>
